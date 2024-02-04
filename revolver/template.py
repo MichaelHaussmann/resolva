@@ -1,0 +1,174 @@
+"""
+This code is taken and derived from Lucidity.
+
+https://gitlab.com/4degrees/lucidity/
+https://lucidity.readthedocs.io
+
+copyright: Copyright (c) 2013 Martin Pengelly-Phillips
+licence: Apache License, Version 2.0, January 2004, http://www.apache.org/licenses
+
+"""
+
+import functools
+from collections import defaultdict
+import re
+import sys
+
+
+class ParseError(Exception):
+    """
+    Parse Error
+    """
+
+
+check_duplicate_placeholders = False
+_default_placeholder_expression = "[^/]*"  # spil
+
+
+def construct_regular_expression(pattern):
+    '''Return a regular expression to represent *pattern*.'''
+    # Escape non-placeholder components.
+    # expression = re.sub(
+    #     r'(?P<placeholder>{(.+?)(:(\\}|.)+?)?})|(?P<other>.+?)',
+    #     self._escape,
+    #     pattern
+    # )
+    expression = pattern
+
+    # Replace placeholders with regex pattern.
+    expression = re.sub(
+        r'{(?P<placeholder>.+?)(:(?P<expression>(\\}|.)+?))?}',
+        functools.partial(
+            _convert, placeholder_count=defaultdict(int)
+        ),
+        expression
+    )
+
+    # anchor both
+    expression = '^{0}$'.format(expression)
+
+    # Compile expression.
+    try:
+        # print("Before compile:")
+        # print(expression)
+        compiled = re.compile(expression)
+    except re.error as error:
+        if any([
+            'bad group name' in str(error),
+            'bad character in group name' in str(error)
+        ]):
+            raise ValueError('Placeholder name contains invalid '
+                             'characters.')
+        else:
+            _, value, traceback = sys.exc_info()
+            message = 'Invalid pattern: {0}| {1}'.format(value, traceback)
+            raise ValueError(message)
+
+    return compiled
+
+
+def _convert(match, placeholder_count):
+    '''Return a regular expression to represent *match*.
+
+    *placeholder_count* should be a `defaultdict(int)` that will be used to
+    store counts of unique placeholder names.
+
+    '''
+    placeholder_name = match.group('placeholder')
+
+    # The re module does not support duplicate group names. To support
+    # duplicate placeholder names in templates add a unique count to the
+    # regular expression group name and strip it later during parse.
+    placeholder_count[placeholder_name] += 1
+    placeholder_name += '{0:03d}'.format(
+        placeholder_count[placeholder_name]
+    )
+
+    expression = match.group('expression')
+    if expression is None:
+        expression = _default_placeholder_expression
+
+    # Un-escape potentially escaped characters in expression.
+    expression = expression.replace('\\{', '{').replace('\\}', '}')
+
+    return r'(?P<{0}>{1})'.format(placeholder_name, expression)
+
+
+def match_to_dict(match):
+    """
+
+
+    Derived from lucidity.Template.parse function.
+
+    Args:
+        match:
+
+    Returns:
+
+    """
+
+    data = {}
+    for key, value in sorted(match.groupdict().items()):
+        # Strip number that was added to make group name unique.
+        key = key[:-3]
+
+        # If check_duplicate_placeholders is True, ensure that
+        # all duplicate placeholders extract the same value.
+        if check_duplicate_placeholders:
+            if key in data:
+                if data[key] != value:
+                    raise ParseError(
+                        'Different extracted values for placeholder '
+                        '{0!r} detected. Values were {1!r} and {2!r}.'
+                        .format(key, data[key], value)
+                    )
+
+        data[key] = value
+
+    return data
+
+
+"""
+def format(data):
+    '''Return a path formatted by applying *data* to this template.
+
+    Raise :py:class:`~lucidity.error.FormatError` if *data* does not
+    supply enough information to fill the template fields.
+
+    '''
+
+    format_specification = self._construct_format_specification(
+        self.expanded_pattern()
+    )
+
+    return self._PLAIN_PLACEHOLDER_REGEX.sub(
+        functools.partial(self._format, data=data),
+        format_specification
+    )
+
+def _format(match, data):
+    '''Return value from data for *match*.'''
+    placeholder = match.group(1)
+    parts = placeholder.split('.')
+
+    try:
+        value = data
+        for part in parts:
+            value = value[part]
+
+    except (TypeError, KeyError):
+        raise lucidity.error.FormatError(
+            'Could not format data {0!r} due to missing key {1!r}.'
+            .format(data, placeholder)
+        )
+
+    else:
+        return value
+
+"""
+
+if __name__ == "__main__":
+
+    t = '{project}/{type:s}/{sequence}/{shot}/{task}/{version}/{state}/{ext:scenes}'
+    r = construct_regular_expression(t)
+    print(r)

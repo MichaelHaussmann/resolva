@@ -1,0 +1,17 @@
+*.pyc
+config.ini
+__pycache__
+.idea
+venv
+.venv
+*.egg-info
+/drafts/
+/dist/
+/build/
+.pytest_cache
+.mypy_cache
+/.limbo/
+/docs-wip
+/docs/_build
+*wip
+*_secret.py
