@@ -14,12 +14,7 @@ from collections import defaultdict
 import re
 import sys
 
-
-class ParseError(Exception):
-    """
-    Parse Error
-    """
-
+from revolver.utils import RevolverException
 
 check_duplicate_placeholders = False
 _default_placeholder_expression = "[^/]*"  # spil
@@ -117,7 +112,7 @@ def match_to_dict(match):
         if check_duplicate_placeholders:
             if key in data:
                 if data[key] != value:
-                    raise ParseError(
+                    raise RevolverException(
                         'Different extracted values for placeholder '
                         '{0!r} detected. Values were {1!r} and {2!r}.'
                         .format(key, data[key], value)
@@ -127,45 +122,6 @@ def match_to_dict(match):
 
     return data
 
-
-"""
-def format(data):
-    '''Return a path formatted by applying *data* to this template.
-
-    Raise :py:class:`~lucidity.error.FormatError` if *data* does not
-    supply enough information to fill the template fields.
-
-    '''
-
-    format_specification = self._construct_format_specification(
-        self.expanded_pattern()
-    )
-
-    return self._PLAIN_PLACEHOLDER_REGEX.sub(
-        functools.partial(self._format, data=data),
-        format_specification
-    )
-
-def _format(match, data):
-    '''Return value from data for *match*.'''
-    placeholder = match.group(1)
-    parts = placeholder.split('.')
-
-    try:
-        value = data
-        for part in parts:
-            value = value[part]
-
-    except (TypeError, KeyError):
-        raise lucidity.error.FormatError(
-            'Could not format data {0!r} due to missing key {1!r}.'
-            .format(data, placeholder)
-        )
-
-    else:
-        return value
-
-"""
 
 if __name__ == "__main__":
 

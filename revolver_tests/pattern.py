@@ -28,6 +28,31 @@ sid_templates = {
 }
 
 
+sid_templates = {
+    "asset__file": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(ma|mb|hip|blend|hou|psd|nk|maya|\*|\>)}",
+    "asset__movie_file": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(mp4|mov|avi|movie|\*|\>)}",
+    "asset__cache_file": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(abc|json|fur|grm|vdb|cache|\*|\>)}",
+    "asset__state": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}",
+    "asset__version": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}",
+    "asset__task": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}",
+    "asset__asset": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}",
+    "asset__assettype": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}",
+    "asset": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}",
+    "shot__file": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(ma|mb|hip|blend|hou|psd|nk|maya|\*|\>)}",
+    "shot__movie_file": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(mp4|mov|avi|movie|\*|\>)}",
+    "shot__cache_file": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(abc|json|fur|grm|vdb|cache|\*|\>)}",
+    "shot__cache_node_file": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{node}/{ext:(abc|json|fur|grm|vdb|cache|\*|\>)}",
+    "shot__cache_node": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{node}",
+    "shot__state": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}",
+    "shot__version": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}",
+    "shot__task": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}",
+    "shot__shot": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}",
+    "shot__sequence": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}",
+    "shot": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}",
+    "project": r"{project:(hamlet|\*|\>)}",
+}
+
+
 if __name__ == "__main__":
 
     for k, v in sid_templates.items():

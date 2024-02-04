@@ -1,33 +1,39 @@
 from __future__ import annotations
-
 from functools import lru_cache
 
-# from typing import List, Dict
-
+from revolver import template, formatter
 import revolver.utils
-from revolver import template
 
 instance_cache = {}
 
 
 class Resolver:
 
-    def __init__(self, name: str, patterns: list[dict[str, str]]):
+    def __init__(self, id: str, patterns: dict[str, str]):
 
         self._patterns = patterns
-        self._regexes = {k: template.construct_regular_expression(patterns.get(k)) for k in patterns}
+        self._regexes = {k: template.construct_regular_expression(v) for k, v in patterns.items()}
 
-        print(f'Resolver init of "{name}"')
+        print(f'Resolver init of "{id}"')
 
         # TODO: warn if exists already in instance cache - overrides instance cache
-        instance_cache[name] = self
+        instance_cache[id] = self
 
     @staticmethod
-    def get(name):
-        instance = instance_cache.get(name)
+    def get(id: str) -> Resolver:
+        instance = instance_cache.get(id)
         if not instance:
-            raise revolver.utils.RevolverException(f'No Resolver instance found with name "{name}"')
+            raise revolver.utils.RevolverException(f'No Resolver instance found with id "{id}"')
         return instance
+
+    def get_names(self) -> list[str]:
+        """
+        Returns the list of pattern names.
+        """
+        return list(self._regexes.keys())
+
+    def regexes(self):
+        return self._regexes
 
     @lru_cache()
     def resolve_first(self, string: str) -> dict[str, dict[str, str]] | None:
@@ -66,3 +72,36 @@ class Resolver:
         if found:
             return found
 
+    def format_first(self, data: dict[str, str]) -> dict[str, str] | None:
+
+        for name, pattern in self._patterns.items():
+
+            formatted = formatter.format(data, pattern)
+
+            if formatted:
+
+                return {name: formatted}
+
+    def format_one(self, data: dict[str, str], name: str) -> str | None:
+
+        pattern = self._patterns.get(name)
+
+        return formatter.format(data, pattern)
+
+    def format_all(self, data: dict[str, str]) -> dict[str, str] | None:
+
+        found = {}
+
+        for name, pattern in self._patterns.items():
+
+            formatted = formatter.format(data, pattern)
+
+            if formatted:
+
+                found[name] = formatted
+
+        return found
+
+
+if __name__ == "__main__":
+    pass
