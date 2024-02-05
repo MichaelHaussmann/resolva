@@ -8,7 +8,6 @@ copyright: Copyright (c) 2013 Martin Pengelly-Phillips
 licence: Apache License, Version 2.0, January 2004, http://www.apache.org/licenses
 
 """
-
 import functools
 from collections import defaultdict
 import re
@@ -18,6 +17,7 @@ from revolver.utils import RevolverException
 
 check_duplicate_placeholders = False
 _default_placeholder_expression = "[^/]*"  # spil
+_STRIP_EXPRESSION_REGEX = re.compile(r'{(.+?)(:(\\}|.)+?)}')
 
 
 def construct_regular_expression(pattern):
@@ -92,7 +92,6 @@ def _convert(match, placeholder_count):
 def match_to_dict(match):
     """
 
-
     Derived from lucidity.Template.parse function.
 
     Args:
@@ -123,8 +122,18 @@ def match_to_dict(match):
     return data
 
 
+def construct_format_specification(pattern):
+    '''Return format specification from *pattern*.'''
+    return _STRIP_EXPRESSION_REGEX.sub('{\g<1>}', pattern)
+
+
 if __name__ == "__main__":
 
-    t = '{project}/{type:s}/{sequence}/{shot}/{task}/{version}/{state}/{ext:scenes}'
-    r = construct_regular_expression(t)
-    print(r)
+    pat = '{project}/{type:s}/{sequence}/{shot}/{task}/{version}/{state}/{ext:ma|mb}'
+    print(f'Pattern: \n{pat}\n')
+
+    reg = construct_regular_expression(pat)
+    print(f'Regex: \n{reg}\n')
+
+    fmt = construct_format_specification(pat)
+    print(f'Formattable: \n{fmt}\n')
