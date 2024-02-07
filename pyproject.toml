@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "resolva"
+]
+exclude = [".gitignore"]
+
+[project]
+name = "resolva"
+version = "0.1.0"
+description = "Simple and fast path template resolver."
+readme = "README.md"
+authors = [{ name = "Michael Haussmann", email = "spil@xeo.info" }]
+license = { file = "LICENSE" }
+classifiers=[
+        "Development Status :: 4 - Beta",
+        'Operating System :: OS Independent',
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
+        "Topic :: Software Development",
+        "Topic :: Software Development :: Libraries",
+        "License :: OSI Approved :: MIT License",
+]
+keywords=[
+    'path templates'
+]
+dependencies = [
+    "typing-extensions"
+]
+requires-python = ">=3.7"
+
+[project.optional-dependencies]
+dev = ["pytest"]  # "Faker"
+qc = ["mypy", "black", "flake8", "isort", "refurb"]  # Code Quality
+
+[project.urls]
+"Homepage" = "https://github.com/MichaelHaussmann/resolva"
+# "Documentation" = "https://resolva.readthedocs.io"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 100
+target-version = ['py37']
+
+[tool.refurb]
+python-version = 3.7
+ignore = [126]
+
+[tool.mypy]
+check-untyped-defs = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+log_cli = true
+# addopts = "--doctest-modules --ignore=spil_plugins --ignore=spil/sid/read/finders/find_cache.py --capture=no"
+
+# note: use of single quote to denote "raw" strings in TOML
