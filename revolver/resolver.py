@@ -15,6 +15,7 @@ class Resolver:
         self._patterns = patterns
         self._regexes = {k: template.construct_regular_expression(v) for k, v in patterns.items()}
         self._formats = {k: template.construct_format_specification(v) for k, v in patterns.items()}
+        self._keys = {k: set([t[1] for t in _string.Formatter().parse(v) if t[1] is not None]) for k, v in self._formats.items()}
 
         print(f'Resolver init of "{id}"')
 
@@ -48,6 +49,11 @@ class Resolver:
         if name:
             return self._formats.get(name)
         return self._formats
+
+    def get_keys(self, name=None):
+        if name:
+            return self._keys.get(name)
+        return self._keys
 
     @lru_cache()
     def resolve_first(self, string: str) -> dict[str, dict[str, str]] | None:
@@ -90,8 +96,7 @@ class Resolver:
 
         for name, _format in self._formats.items():
 
-            template_keys = [t[1] for t in _string.Formatter().parse(_format) if t[1] is not None]
-            if set(template_keys) != set(data.keys()):
+            if data.keys() != self._keys.get(name):
                 continue
 
             formatted = _format.format(**data)
@@ -104,9 +109,8 @@ class Resolver:
     def format_one(self, data: dict[str, str], name: str) -> str | None:
 
         _format = self._formats.get(name)
-        template_keys = [t[1] for t in _string.Formatter().parse(_format) if t[1] is not None]
 
-        if set(template_keys) != set(data.keys()):
+        if data.keys() != self._keys.get(name):
             return None
 
         formatted = _format.format(**data)
@@ -122,8 +126,7 @@ class Resolver:
 
         for name, _format in self._formats.items():
 
-            template_keys = [t[1] for t in _string.Formatter().parse(_format) if t[1] is not None]
-            if set(template_keys) != set(data.keys()):
+            if data.keys() != self._keys.get(name):
                 continue
 
             formatted = _format.format(**data)
@@ -139,6 +142,7 @@ class Resolver:
 if __name__ == "__main__":
 
     patterns = {'file': '{project}/{type:s}/{sequence}/bla/{ext:ma|mb}'}
+
     Resolver("any_id", patterns)
     r = Resolver.get("any_id")  # getting from instance cache.
 

@@ -5,7 +5,7 @@ from revolver_tests.pattern import sid_templates
 Resolver(id="sids", patterns=sid_templates)
 r = Resolver.get("sids")
 
-for s in test_strings[:]:
+for s in test_strings:
     print('*'*100)
     print(f'Input: {s}')
 
