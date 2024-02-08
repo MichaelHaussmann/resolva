@@ -10,9 +10,7 @@ name = 'resolva'
 
 version = '0.1.0'
 
-requires = [
-    "typing_extensions"
-]
+requires = []
 
 description = "https://github.com/MichaelHaussmann/resolva"
 authors = ['Michael Haussmann']
