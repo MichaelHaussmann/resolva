@@ -1,7 +1,7 @@
 from datetime import datetime
-from revolver import Resolver
-from revolver_tests.data import test_strings
-from revolver_tests.pattern import sid_templates
+from resolva import Resolver
+from resolva_tests.data import test_strings
+from resolva_tests.pattern import sid_templates
 
 
 Resolver(id="sids", patterns=sid_templates)

@@ -13,7 +13,7 @@ from collections import defaultdict
 import re
 import sys
 
-from revolver.utils import RevolverException
+from resolva.utils import RevolverException
 
 _default_placeholder_expression = "[^/]*"  # spil
 _STRIP_EXPRESSION_REGEX = re.compile(r'{(.+?)(:(\\}|.)+?)}')
@@ -46,8 +46,6 @@ def construct_regular_expression(pattern, anchor_start=True, anchor_end=True):
 
     # Compile expression.
     try:
-        # print("Before compile:")
-        # print(expression)
         compiled = re.compile(expression)
     except re.error as error:
         if any([

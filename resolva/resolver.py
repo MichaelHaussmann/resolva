@@ -5,8 +5,8 @@ from functools import lru_cache
 import string as _string
 import re
 
-from revolver import template
-from revolver.utils import log
+from resolva import template
+from resolva.utils import log
 
 instance_cache = {}
 

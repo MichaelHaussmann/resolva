@@ -1,5 +1,5 @@
 
-
+# basic pattern
 sid_templates = {
 
     # type asset
@@ -27,7 +27,7 @@ sid_templates = {
 
 }
 
-
+# After adding some expressions
 sid_templates = {
     "asset__file": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(ma|mb|hip|blend|hou|psd|nk|maya|\*|\>)}",
     "asset__movie_file": r"{project:(hamlet|\*|\>)}/{type:(a|\*|\>)}/{assettype:(char|location|prop|fx|\*|\>)}/{asset}/{task:(art|model|surface|rig|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{ext:(mp4|mov|avi|movie|\*|\>)}",
@@ -50,7 +50,7 @@ sid_templates = {
     "shot__sequence": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}",
     "shot": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}",
     "project": r"{project:(hamlet|\*|\>)}",
-    # "something": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{project}",
+    # "something": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{project}",  # duplicate placeholder "project"
 }
 
 
