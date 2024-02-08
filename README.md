@@ -7,17 +7,17 @@ Inspired by and derived from Lucidity.
 
 ## What is resolva ?
 
-resolva is a python library that extracts data from a string by matching configurated patterns.
+**resolva** is a python library that extracts data from a string by matching configurated patterns.
 
 Typical usage:
 - for a path or string input,
 - loops through a series of configured patterns, 
 - once a matching pattern found, 
-- extracts data into a dictionary
+- extracts data and returns a dictionary
 
 Instead of bare regex, the pattern has a more readable "format" style syntax.  
 
-resolva can also format the data back to a string.
+**resolva** can also format the data back to a string.
 
 ### Path resolving
 
@@ -27,8 +27,8 @@ Examples include:
 
 - [Shotgrid Toolkit](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml) - Commercial CG and VFX Project Management and pipeline Toolkit
 - [CGWire's kitsu file trees](https://zou.cg-wire.com/file_trees) - Kitsu is an Open Source collaboration platform for Animation and VFX studios. 
-- [Lucidity](https://gitlab.com/4degrees/lucidity) - Inspiration and source of resolva
-- [spil](https://github.com/MichaelHaussmann/spil) - Uses resolva at its core
+- [Lucidity](https://gitlab.com/4degrees/lucidity) - Inspiration and source of **resolva**
+- [spil](https://github.com/MichaelHaussmann/spil) - Uses **resolva** at its core
 
 
 ## Usage Example
@@ -53,13 +53,13 @@ patterns = {'maya_file': ''}
 
 ## Why not Lucidity ?
 
-Resolva is a simplified version of the Lucidity, a filesystem templating and management library.
+**resolva** is a simplified version of [Lucidity](https://gitlab.com/4degrees/lucidity), a filesystem templating library.
 
-Resolva is at the core of [spil](https://github.com/MichaelHaussmann/spil).
+**resolva** is now used at the core of [spil](https://github.com/MichaelHaussmann/spil).  
 A large amount of strings and paths need to be resolved at high speed.
 
-The end goal is to build a rust path template resolver.
-(rust development not started yet).
+The end goal is to build a rust path template resolver.  
+Rust development not started yet - contributions are highly welcomed :)
 
 To prepare this in python, we reduced the Lucidity library to its essence (around 100 lines of code).
 
@@ -67,7 +67,14 @@ On top of these essential features, we built a simple Resolver class with an ins
 
 The result is a very simple to use and fast tool.
 
-Resolva lacks some Lucidity features that were cut out:
+**resolva** keeps most of Lucidity's features:
+
+- simple "bracket" template format   
+  Example: `{shot}/{version}/{extension:ma|mb}`
+- handles duplicate placeholders
+- pattern anchoring (start:`^`,end:`$`)
+
+**resolva** lacks some Lucidity features, that were left out:
 
 - individual template API
 - nested data structures
@@ -77,21 +84,25 @@ Resolva lacks some Lucidity features that were cut out:
 If you need one of these, go for the original :)
 
 
-### TODO: 
-- rename package and repo
+### TODO:
 - doc & doctests
-- add pyproject for pypi release
 - rust version with python binding
 - black, refurb, etc.
 
 
-### Acknowledgement
+### Acknowledgements
 
-Lucidity
+**resolva** is inspired by and derived from **Lucidity**.
 
-https://gitlab.com/4degrees/lucidity/
-https://lucidity.readthedocs.io
+#### Lucidity 
 
-copyright: Copyright (c) 2013 Martin Pengelly-Phillips
-licence: Apache License, Version 2.0, January 2004, http://www.apache.org/licenses
+https://gitlab.com/4degrees/lucidity/  
+https://lucidity.readthedocs.io  
+copyright: Copyright (c) 2013 Martin Pengelly-Phillips  
+licence: Apache License, Version 2.0
 
+#### resolva
+
+https://github.com/MichaelHaussmann/resolva  
+(c) 2024 Michael Haussmann  
+licence: MIT
