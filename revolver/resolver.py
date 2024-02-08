@@ -1,32 +1,46 @@
 from __future__ import annotations
+
+import functools
 from functools import lru_cache
 import string as _string
+import re
 
 from revolver import template
-import revolver.utils
+from revolver.utils import log
 
 instance_cache = {}
 
 
 class Resolver:
 
-    def __init__(self, id: str, patterns: dict[str, str]):
+    def __init__(self, id: str, patterns: dict[str, str],
+                 check_duplicate_placeholders: bool = True,
+                 anchor_start: bool = True,
+                 anchor_end: bool = True
+                 ):
+
+        # this is just to have a more readable dict comprehension loop later (k: construct_regex(v) ...)
+        construct_regex = functools.partial(template.construct_regular_expression,
+                                            anchor_start=anchor_start,
+                                            anchor_end=anchor_end)
 
         self._patterns = patterns
-        self._regexes = {k: template.construct_regular_expression(v) for k, v in patterns.items()}
+        self._regexes = {k: construct_regex(v) for k, v in patterns.items()}
         self._formats = {k: template.construct_format_specification(v) for k, v in patterns.items()}
         self._keys = {k: set([t[1] for t in _string.Formatter().parse(v) if t[1] is not None]) for k, v in self._formats.items()}
 
-        print(f'Resolver init of "{id}"')
+        self.check_duplicate_placeholders = check_duplicate_placeholders
+
+        log.info(f'Resolver class init - id: "{id}"')
 
         # TODO: warn if exists already in instance cache - overrides instance cache
         instance_cache[id] = self
 
     @staticmethod
-    def get(id: str) -> Resolver:
+    def get(id: str) -> Resolver | None:
         instance = instance_cache.get(id)
         if not instance:
-            raise revolver.utils.RevolverException(f'No Resolver instance found with id "{id}"')
+            log.warning(f'No Resolver instance found with id "{id}"')
         return instance
 
     def get_names(self) -> list[str]:
@@ -35,64 +49,75 @@ class Resolver:
         """
         return list(self._regexes.keys())
 
-    def get_patterns(self, name=None):
+    def get_patterns(self, name=None) -> dict[str, str] | str:
         if name:
             return self._patterns.get(name)
         return self._patterns
 
-    def get_regexes(self, name=None):
+    def get_regexes(self, name=None) -> dict[str, re.Pattern] | re.Pattern:
         if name:
             return self._regexes.get(name)
         return self._regexes
 
-    def get_formats(self, name=None):
+    def get_formats(self, name=None) -> dict[str, str] | str:
         if name:
             return self._formats.get(name)
         return self._formats
 
-    def get_keys(self, name=None):
+    def get_keys(self, name=None) -> dict[str, set] | set:
         if name:
             return self._keys.get(name)
         return self._keys
 
     @lru_cache()
-    def resolve_first(self, string: str) -> dict[str, dict[str, str]] | None:
+    def resolve_first(self, string: str) -> tuple[str, dict[str, str]] | None:
+
+        if not string:
+            return None
 
         for name, regex in self._regexes.items():
 
             match = regex.search(string)
             if match:
-                data = template.match_to_dict(match)
+                data = template.match_to_dict(match, self.check_duplicate_placeholders)
                 if data:
-                    return {name: data}
+                    return name, data
 
     @lru_cache()
     def resolve_one(self, string: str, name: str) -> dict[str, str] | None:
+
+        if not string:
+            return None
 
         regex = self._regexes.get(name)
 
         if regex:
             match = regex.search(string)
             if match:
-                data = template.match_to_dict(match)
+                data = template.match_to_dict(match, self.check_duplicate_placeholders)
                 if data:
                     return data
 
     @lru_cache()
-    def resolve_all(self, string: str) -> dict[str, dict[str, str]] | None:
+    def resolve_all(self, string: str) -> dict[str, dict[str, str]] | {}:
 
         found = {}
+
+        if not string:
+            return found
+
         for name, regex in self._regexes.items():
             match = regex.search(string)
             if match:
-                data = template.match_to_dict(match)
+                data = template.match_to_dict(match, self.check_duplicate_placeholders)
                 if data:
                     found[name] = data
+        return found
 
-        if found:
-            return found
+    def format_first(self, data: dict[str, str]) -> tuple[str, str] | None:
 
-    def format_first(self, data: dict[str, str]) -> dict[str, str] | None:
+        if not data:
+            return None
 
         for name, _format in self._formats.items():
 
@@ -104,9 +129,12 @@ class Resolver:
             # reverse check
             reverse_check = self.resolve_one(formatted, name)
             if reverse_check:
-                return {name: formatted}
+                return name, formatted
 
     def format_one(self, data: dict[str, str], name: str) -> str | None:
+
+        if not data:
+            return None
 
         _format = self._formats.get(name)
 
@@ -120,9 +148,12 @@ class Resolver:
         if reverse_check:
             return formatted
 
-    def format_all(self, data: dict[str, str]) -> dict[str, dict[str, str]] | None:
+    def format_all(self, data: dict[str, str]) -> dict[str, dict[str, str]] | {}:
 
         found = {}
+
+        if not data:
+            return found
 
         for name, _format in self._formats.items():
 
@@ -164,4 +195,4 @@ if __name__ == "__main__":
     no_checks = r.get_formats("file").format(**data)
     print(no_checks)
 
-
+    p = Resolver.get("something else")

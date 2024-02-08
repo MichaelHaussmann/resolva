@@ -1,7 +1,7 @@
 
 # resolva
 
-Simple and fast path template resolver.
+Simple and fast path template resolver.  
 Inspired by and derived from Lucidity.
 
 
@@ -9,12 +9,15 @@ Inspired by and derived from Lucidity.
 
 resolva is a python library that extracts data from a string by matching configurated patterns.
 
-It typically uses a path input, then
-- loops through a series of configured patterns, and 
-- once a matching pattern found, data is extracted into a dictionary
+Typical usage:
+- for a path or string input,
+- loops through a series of configured patterns, 
+- once a matching pattern found, 
+- extracts data into a dictionary
+
+Instead of bare regex, the pattern has a more readable "format" style syntax.  
 
 resolva can also format the data back to a string.
-
 
 ### Path resolving
 
@@ -76,16 +79,10 @@ If you need one of these, go for the original :)
 
 ### TODO: 
 - rename package and repo
-- optional strict / relaxed (as lucidity)
-- optional anchor start / end / both (as lucidity)
 - doc & doctests
-- check / change resolver return types
-- test failing scenarios (duplicated keys with strict)
-- test all features with duplicated keys strict and relaxed
-- test format behaviour in lucidity
-- rename repo and python package
 - add pyproject for pypi release
 - rust version with python binding
+- black, refurb, etc.
 
 
 ### Acknowledgement

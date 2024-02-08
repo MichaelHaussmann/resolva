@@ -30,9 +30,7 @@ classifiers=[
 keywords=[
     'path templates'
 ]
-dependencies = [
-    "typing-extensions"
-]
+dependencies = []
 requires-python = ">=3.7"
 
 [project.optional-dependencies]

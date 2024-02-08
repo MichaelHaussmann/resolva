@@ -50,6 +50,7 @@ sid_templates = {
     "shot__sequence": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}",
     "shot": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}",
     "project": r"{project:(hamlet|\*|\>)}",
+    # "something": r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{project}",
 }
 
 

@@ -15,12 +15,11 @@ import sys
 
 from revolver.utils import RevolverException
 
-check_duplicate_placeholders = False
 _default_placeholder_expression = "[^/]*"  # spil
 _STRIP_EXPRESSION_REGEX = re.compile(r'{(.+?)(:(\\}|.)+?)}')
 
 
-def construct_regular_expression(pattern):
+def construct_regular_expression(pattern, anchor_start=True, anchor_end=True):
     '''Return a regular expression to represent *pattern*.'''
     # Escape non-placeholder components.
     # expression = re.sub(
@@ -39,8 +38,11 @@ def construct_regular_expression(pattern):
         expression
     )
 
-    # anchor both
-    expression = '^{0}$'.format(expression)
+    # anchoring
+    if anchor_start:
+        expression = '^{0}'.format(expression)
+    if anchor_end:
+        expression = '{0}$'.format(expression)
 
     # Compile expression.
     try:
@@ -89,20 +91,20 @@ def _convert(match, placeholder_count):
     return r'(?P<{0}>{1})'.format(placeholder_name, expression)
 
 
-def match_to_dict(match):
+def match_to_dict(match, check_duplicate_placeholders=True):
     """
-
     Derived from lucidity.Template.parse function.
 
     Args:
-        match:
+        match: regex match
+        check_duplicate_placeholders: if we should check that duplicate placeholders have identical values.
 
     Returns:
-
+        the dictionary of key values extracted from the regex match.
     """
 
     data = {}
-    for key, value in sorted(match.groupdict().items()):
+    for key, value in match.groupdict().items():
         # Strip number that was added to make group name unique.
         key = key[:-3]
 
