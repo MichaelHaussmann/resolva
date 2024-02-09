@@ -9,6 +9,8 @@ Inspired by and derived from Lucidity.
 
 **resolva** is a python library that extracts data from a string by matching configurated patterns.
 
+`"/mnt/prods/hamlet/shots/sq010"` => `"/mnt/prods/{prod}/shots/{seq}"` => `{"prod": "hamlet", "seq": "sq010"}`
+
 Typical usage:
 - for a path or string input,
 - loops through a series of configured patterns, 
@@ -33,22 +35,40 @@ Examples include:
 
 ## Usage Example
 
+Configuration:
 ```python
-# config
-patterns = {'maya_file': ''}
+from resolva import Resolver
 
-# usage
-
-
-
+template = {"maya_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(ma|mb)}",
+            "hou_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(hip|hipnc)}"}
+Resolver("id", template)
 ```
+Usage:
+```python
+from resolva import Resolver
+r = Resolver.get("id")
+
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+_type, data = r.resolve_first(input)
+
+# result:
+print(f'Detected type "{_type}" and extracted "{data}"')
+```
+Output:
+```
+Detected type "maya_file" and extracted 
+{"prod": "hamlet", "seq": "sq010", "shot": "sh010", "version": "v012", "ext": "ma"}
+```
+
+
 
 ## Features
 
-- simple pattern usage (as in lucidity)
+- simple pattern usage
 - very simple API
-- instance cache to avoid repeated regex compilations
-- lru_caches to speed up resolves
+- high speed using caches
+  - instance cache (keep regex compilations in memory)
+  - lru_caches (speed up immutable resolves)
 
 
 ## Why not Lucidity ?
@@ -65,12 +85,12 @@ To prepare this in python, we reduced the Lucidity library to its essence (aroun
 
 On top of these essential features, we built a simple Resolver class with an instance cache (to keep regex compiles in memory), and a lru cache, to memoize resolves that have no reason to change.
 
-The result is a very simple to use and fast tool.
+The result is fast and very simple to use.
 
 **resolva** keeps most of Lucidity's features:
 
-- simple "bracket" template format   
-  Example: `{shot}/{version}/{extension:ma|mb}`
+- simple template format     
+  Example: `{shot}/{version}/{extension:(ma|mb)}`
 - handles duplicate placeholders
 - pattern anchoring (start:`^`,end:`$`)
 
@@ -85,14 +105,18 @@ If you need one of these, go for the original :)
 
 
 ### TODO:
-- doc & doctests
-- rust version with python binding
+- should fails return (None, None) ? tuple[None] ? (replace "found" by "result")
+- docstrings (+doctests) 
+- pytests calling the existing tests
+- fix test logging
+- documentation + API documentation (readthedocs or github?)
 - black, refurb, etc.
+- pip installable and python bound rust implementation 
 
 
 ### Acknowledgements
 
-**resolva** is inspired by and derived from **Lucidity**.
+**resolva** is inspired by, and derived from **Lucidity**.
 
 #### Lucidity 
 
