@@ -9,7 +9,9 @@ Inspired by and derived from Lucidity.
 
 **resolva** is a python library that extracts data from a string by matching configurated patterns.
 
-`"/mnt/prods/hamlet/shots/sq010"` => `"/mnt/prods/{prod}/shots/{seq}"` => `{"prod": "hamlet", "seq": "sq010"}`
+`"/mnt/prods/hamlet/shots/sq010"` => 
+`"/mnt/prods/{prod}/shots/{seq}"` => 
+`{"prod": "hamlet", "seq": "sq010"}`
 
 Typical usage:
 - for a path or string input,
@@ -17,7 +19,7 @@ Typical usage:
 - once a matching pattern found, 
 - extracts data and returns a dictionary
 
-Instead of bare regex, the pattern has a more readable "format" style syntax.  
+Instead of bare regex, the pattern uses a simpler "format" style syntax.  
 
 **resolva** can also format the data back to a string.
 
@@ -27,9 +29,9 @@ Template based path resolving is a typical need in CG pipeline tools.
 
 Examples include:
 
-- [Shotgrid Toolkit](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml) - Commercial CG and VFX Project Management and pipeline Toolkit
+- [Shotgrid Toolkit (SGTK)](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml) - Leading commercial CG and VFX Project Management and pipeline toolkit
 - [CGWire's kitsu file trees](https://zou.cg-wire.com/file_trees) - Kitsu is an Open Source collaboration platform for Animation and VFX studios. 
-- [Lucidity](https://gitlab.com/4degrees/lucidity) - Inspiration and source of **resolva**
+- [Lucidity](https://gitlab.com/4degrees/lucidity) - Inspired by SGTK templating, in turn inspiration and base of **resolva**
 - [spil](https://github.com/MichaelHaussmann/spil) - Uses **resolva** at its core
 
 
@@ -64,8 +66,13 @@ Detected type "maya_file" and extracted
 
 ## Features
 
-- simple pattern usage
+- simple template format     
+  - Example: `{shot}/{version}/{extension:(ma|mb)}`
+  - handles duplicate placeholders
 - very simple API
+  - resolve with one, first, or all patterns
+  - format with one, first, or all patterns
+  - format including reverse resolve check
 - high speed using caches
   - instance cache (keep regex compilations in memory)
   - lru_caches (speed up immutable resolves)
@@ -85,12 +92,11 @@ To prepare this in python, we reduced the Lucidity library to its essence (aroun
 
 On top of these essential features, we built a simple Resolver class with an instance cache (to keep regex compiles in memory), and a lru cache, to memoize resolves that have no reason to change.
 
-The result is fast and very simple to use.
+The result is a fast and very simple to use toolset.
 
-**resolva** keeps most of Lucidity's features:
+**resolva** keeps essential Lucidity's features:
 
-- simple template format     
-  Example: `{shot}/{version}/{extension:(ma|mb)}`
+- simple template format 
 - handles duplicate placeholders
 - pattern anchoring (start:`^`,end:`$`)
 
@@ -100,11 +106,14 @@ The result is fast and very simple to use.
 - nested data structures
 - template discovery
 - templates referencing templates
+- python 2 support
 
 If you need one of these, go for the original :)
 
 
 ### TODO:
+
+- "label" instead of "name" ? or "key" ? 
 - should fails return (None, None) ? tuple[None] ? (replace "found" by "result")
 - docstrings (+doctests) 
 - pytests calling the existing tests
