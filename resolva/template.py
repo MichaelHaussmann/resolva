@@ -13,10 +13,11 @@ from collections import defaultdict
 import re
 import sys
 
-from resolva.utils import RevolverException
+from resolva.utils import ResolvaException
 
 _default_placeholder_expression = "[^/]*"  # spil
 _STRIP_EXPRESSION_REGEX = re.compile(r'{(.+?)(:(\\}|.)+?)}')
+_PLAIN_PLACEHOLDER_REGEX = re.compile(r'{(.+?)}')
 
 
 def construct_regular_expression(pattern, anchor_start=True, anchor_end=True):
@@ -111,7 +112,7 @@ def match_to_dict(match, check_duplicate_placeholders=True):
         if check_duplicate_placeholders:
             if key in data:
                 if data[key] != value:
-                    raise RevolverException(
+                    raise ResolvaException(
                         'Different extracted values for placeholder '
                         '{0!r} detected. Values were {1!r} and {2!r}.'
                         .format(key, data[key], value)
@@ -125,6 +126,10 @@ def match_to_dict(match, check_duplicate_placeholders=True):
 def construct_format_specification(pattern):
     '''Return format specification from *pattern*.'''
     return _STRIP_EXPRESSION_REGEX.sub('{\g<1>}', pattern)
+
+
+def get_keys(pattern):
+    return _PLAIN_PLACEHOLDER_REGEX.findall(construct_format_specification(pattern))
 
 
 if __name__ == "__main__":
