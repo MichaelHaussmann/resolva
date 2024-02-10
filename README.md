@@ -113,10 +113,9 @@ If you need one of these, go for the original :)
 
 ### TODO:
 
-- exception handling in Resolver
 - docstrings (+doctests) 
 - pytests calling the existing tests
-- documentation + API documentation (readthedocs or github?)
+- Usage documentation, dev documentation + API documentation (readthedocs or github?)
 - black, refurb, etc.
 - pip installable and python bound rust implementation 
 
