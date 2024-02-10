@@ -3,6 +3,8 @@ from resolva import Resolver
 from resolva_tests.data import test_strings
 from resolva_tests.pattern import sid_templates
 
+from resolva.utils import log
+log.setLevel(log.INFO)
 
 Resolver(id="sids", patterns=sid_templates)
 
@@ -12,27 +14,30 @@ start = datetime.now()
 
 for i, s in enumerate(test_strings):
 
-    print('*'*100)
-    print(f'Input {i}: {s}')
+    log.info('*'*100)
+    log.info(f'Input {i}: {s}')
 
-    print(f"First:")
-    k, v = r.resolve_first(s) or (None, None)
-    print(f"\t{k}: {v}")
+    log.info(f"\tFirst:")
+    k, v = r.resolve_first(s)
+    if k:
+        log.info(f"\t\t{k}: {v}")
 
-    print(f"All:")
+    log.info(f"\tAll:")
     for k, v in r.resolve_all(s).items():
-        print(f"\t{k}: {v}")
+        log.info(f"\t\t{k}: {v}")
 
-    print(f"By name:")
+    log.info(f"\tBy name:")
     for name in r.get_names():
         found = r.resolve_one(s, name)
         if found:
-            print(f'\t{name} -> {found}')
+            log.info(f'\t\tKeys: {r.get_keys(name)}')
+            log.info(f'\t\t{name} -> {found}')
+            assert found.keys() == r.get_keys(name)
 
-    print(' ' * 50)
+    log.info(' ' * 50)
 
 end = datetime.now()
-print(f"Duration: {end-start} for {i} items. \n"
+log.warning(f"\nDuration: {end-start} for {i} items. \n"
       f"Average: {(end-start)/i} per item (for 3 resolve operations). \n"
       f"Pattern lines: {len(r.get_keys())}. \n"
-      f"(Including ~50% print time.)")
+      f"(set log level to log.WARNING to measure time without print impact)")

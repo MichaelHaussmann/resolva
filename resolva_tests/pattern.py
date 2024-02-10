@@ -1,6 +1,6 @@
 
 # basic pattern
-sid_templates = {
+sid_templates_pre = {
 
     # type asset
     'asset__file':            '{project}/{type:a}/{assettype}/{asset}/{task}/{version}/{state}/{ext:scenes}',

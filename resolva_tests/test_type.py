@@ -15,24 +15,28 @@ for i, s in enumerate(test_strings):
     log.info('*'*100)
     log.info(f'Input {i}: {s}')
 
+    found = {}
+    for i, data in r.resolve_all(s).items():
+        for j, sid in r.format_all(data).items():
+            found[j] =
+
+
     name_resolved, resolved = r.resolve_first(s)
+    # formatted = r.format_one(resolved, name)
     name_formatted, formatted = r.format_first(resolved)
 
-    # This tests that resolve_first and format first return the same type.
-    log.info(f"\tBack and forth: ")
-    log.info(f"\t\t({name_resolved}) {s} ---> {formatted} ({name_formatted})")
+    log.info(f"Back and forth: ({name_resolved}) {s} -> {formatted} ({name_formatted})")
     if name_resolved:
         assert name_resolved == name_formatted
         assert str(s) == str(formatted)
 
-    log.info(f"\tAll: ({resolved})")
+    log.info(f"All: ({resolved})")
     for k, v in r.format_all(resolved).items():
-        log.info(f"\t\t{k}: {v}")
+        log.info(f"\t{k}: {v}")
 
     log.info(' ' * 50)
 
 end = datetime.now()
 log.warning(f"\nDuration: {end-start} for {i} items. \n"
       f"Average: {(end-start)/i} per item (for 3 resolve operations). \n"
-      f"Pattern lines: {len(r.get_keys())}. \n"
-      f"(set log level to log.WARNING to measure time without print impact)")
+      f"Pattern lines: {len(r.get_keys())}. \n")
