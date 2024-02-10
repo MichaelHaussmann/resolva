@@ -43,12 +43,12 @@ from resolva import Resolver
 
 template = {"maya_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(ma|mb)}",
             "hou_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(hip|hipnc)}"}
-Resolver("id", template)
+Resolver("id", template)  # create the Resolver in an instance cache
 ```
 Usage:
 ```python
 from resolva import Resolver
-r = Resolver.get("id")
+r = Resolver.get("id")  # read the Resolver from the instance cache
 
 input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
 _type, data = r.resolve_first(input)
@@ -67,7 +67,7 @@ Detected type "maya_file" and extracted
 ## Features
 
 - simple template format     
-  - Example: `{shot}/{version}/{extension:(ma|mb)}`
+  - Example: `/{shot}/{version}/{name}.{extension:(ma|mb)}`
   - handles duplicate placeholders
 - very simple API
   - resolve with one, first, or all patterns
@@ -92,7 +92,7 @@ To prepare this in python, we reduced the Lucidity library to its essence (aroun
 
 On top of these essential features, we built a simple Resolver class with an instance cache (to keep regex compiles in memory), and a lru cache, to memoize resolves that have no reason to change.
 
-The result is a fast and very simple to use toolset.
+The result is a fast and very simple toolset.
 
 **resolva** keeps essential Lucidity's features:
 
@@ -113,11 +113,10 @@ If you need one of these, go for the original :)
 
 ### TODO:
 
-- "label" instead of "name" ? or "key" ? 
-- should fails return (None, None) ? tuple[None] ? (replace "found" by "result")
+- exception handling in Resolver  
+- "label" instead of "name" ? or "key" ?
 - docstrings (+doctests) 
 - pytests calling the existing tests
-- fix test logging
 - documentation + API documentation (readthedocs or github?)
 - black, refurb, etc.
 - pip installable and python bound rust implementation 
