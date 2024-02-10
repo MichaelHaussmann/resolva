@@ -1,14 +1,12 @@
 from datetime import datetime
-from resolva import Resolver
-from resolva_tests.data import test_strings
-from resolva_tests.pattern import sid_templates
+from resolva import Resolver  # type: ignore
+from resolva_tests.data import test_strings  # type: ignore
+from resolva_tests.pattern import sid_templates  # type: ignore
 
-from resolva.utils import log
-log.setLevel(log.INFO)
+from resolva.utils import log  # type: ignore
+log.setLevel(log.INFO)  # type: ignore
 
-Resolver(id="sids", patterns=sid_templates)
-
-r = Resolver.get("sids")
+r = Resolver.get("sids") or Resolver(id="sids", patterns=sid_templates)
 
 start = datetime.now()
 
@@ -30,9 +28,9 @@ for i, s in enumerate(test_strings):
     for label in r.get_labels():
         found = r.resolve_one(s, label)
         if found:
-            log.info(f'\t\tKeys: {r.get_keys(label)}')
+            log.info(f'\t\tKeys: {r.get_keys_for(label)}')
             log.info(f'\t\t{label} -> {found}')
-            assert found.keys() == r.get_keys(label)
+            assert found.keys() == r.get_keys_for(label)
 
     log.info(' ' * 50)
 

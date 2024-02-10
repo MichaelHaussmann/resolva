@@ -4,10 +4,9 @@ from resolva_tests.data import test_strings
 from resolva_tests.pattern import sid_templates
 
 from resolva.utils import log
-log.setLevel(log.INFO)
+log.setLevel(log.INFO)  # type: ignore
 
-Resolver(id="sids", patterns=sid_templates)
-r = Resolver.get("sids")
+r = Resolver.get("sids") or Resolver(id="sids", patterns=sid_templates)
 
 start = datetime.now()
 
@@ -16,7 +15,7 @@ for i, s in enumerate(test_strings):
     log.info(f'Input {i}: {s}')
 
     label_resolved, resolved = r.resolve_first(s)
-    label_formatted, formatted = r.format_first(resolved)
+    label_formatted, formatted = r.format_first(resolved)  # type: ignore
 
     # This tests that resolve_first and format first return the same type.
     log.info(f"\tBack and forth: ")

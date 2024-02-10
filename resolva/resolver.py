@@ -1,12 +1,11 @@
 from __future__ import annotations
 from typing import Any
 import functools
-from functools import lru_cache
 import string as _string
 import re
 
-from resolva import template
-from resolva.utils import log, ResolvaException
+from resolva import template  # type: ignore
+from resolva.utils import log, ResolvaException  # type: ignore
 
 instance_cache: dict = {}
 
@@ -65,29 +64,33 @@ class Resolver:
         """
         Returns the list of pattern labels.
         """
-        return list(self._regexes.keys())
+        return list(self._patterns.keys())
 
-    def get_patterns(self, label=None) -> dict[str, str] | str:
-        if label:
-            return self._patterns.get(label)
+    def get_patterns(self) -> dict[str, str]:
         return self._patterns
 
-    def get_regexes(self, label=None) -> dict[str, re.Pattern] | re.Pattern:
-        if label:
-            return self._regexes.get(label)
+    def get_pattern_for(self, label: str) -> str | None:
+        return self._patterns.get(label)
+
+    def get_regexes(self) -> dict[str, re.Pattern]:
         return self._regexes
 
-    def get_formats(self, label=None) -> dict[str, str] | str:
-        if label:
-            return self._formats.get(label)
+    def get_regex_for(self, label: str) -> re.Pattern | None:
+        return self._regexes.get(label)
+
+    def get_formats(self) -> dict[str, str]:
         return self._formats
 
-    def get_keys(self, label=None) -> dict[str, set] | set:
-        if label:
-            return self._keys.get(label)
+    def get_format_for(self, label: str) -> str | None:
+        return self._formats.get(label)
+
+    def get_keys(self) -> dict[str, set]:
         return self._keys
 
-    @lru_cache()
+    def get_keys_for(self, label: str) -> set | None:
+        return self._keys.get(label)
+
+    @functools.lru_cache()
     def resolve_first(self, string: str) -> tuple[str, dict[str, str]] | tuple[None, None]:
 
         result = (None, None)
@@ -105,11 +108,13 @@ class Resolver:
 
         return result
 
-    @lru_cache()
-    def resolve_one(self, string: str, label: str) -> dict[str, str] | None:
+    @functools.lru_cache()
+    def resolve_one(self, string: str, label: str) -> dict[str, str] | dict:
+
+        result: dict = {}
 
         if not string:
-            return None
+            return result
 
         regex = self._regexes.get(label)
 
@@ -120,12 +125,12 @@ class Resolver:
                 if data:
                     return data
 
-        return None
+        return result
 
-    @lru_cache()
-    def resolve_all(self, string: str) -> dict[str, dict[str, str]] | {}:
+    @functools.lru_cache()
+    def resolve_all(self, string: str) -> dict[str, dict[str, str]] | dict:
 
-        found = {}
+        found: dict = {}
 
         if not string:
             return found
@@ -166,7 +171,11 @@ class Resolver:
         if not data:
             return None
 
-        _format = self._formats.get(label)
+        _format = self.get_format_for(label)
+
+        if not _format:
+            log.info(f'Asked to format with "{label}", but not found in {self.get_formats()}')
+            return None
 
         if data.keys() != self._keys.get(label):
             return None
@@ -179,10 +188,11 @@ class Resolver:
             return formatted
         else:
             log.debug(f'reverse check failed on "{formatted}" ({label})')
+            return None
 
-    def format_all(self, data: dict[str, str]) -> dict[str, dict[str, str]] | {}:
+    def format_all(self, data: dict[str, str]) -> dict[str, dict[str, str]] | dict:
 
-        found = {}
+        found: dict = {}
 
         if not data:
             return found
@@ -208,8 +218,7 @@ if __name__ == "__main__":
 
     patterns = {'file': '{project}/{type:s}/{sequence}/bla/{ext:ma|mb}'}
 
-    Resolver("any_id", patterns)
-    r = Resolver.get("any_id")  # getting from instance cache.
+    r = Resolver.get("any_id") or Resolver("any_id", patterns)  # getting from instance cache, or creating object
 
     # formatting checks the data
     data = {'project': 'hamlet',
@@ -226,7 +235,7 @@ if __name__ == "__main__":
             'foo': 'bar',
             'ext': 'not matching'}
 
-    no_checks = r.get_formats("file").format(**data)
+    no_checks = r.get_format_for("file").format(**data)  # type: ignore  # type shortcut for test.
     log.info(no_checks)
 
     patterns = {'file': '{project}/{type:s}/{sequence}/{ext}/bla.{ext:ma|mb}'}
@@ -235,7 +244,7 @@ if __name__ == "__main__":
     input = 'toto/s/1150/ma/bla.ma'
     found = r.resolve_one(input, 'file')
     log.info(found)
-    keys = r.get_keys('file')
+    keys = r.get_keys_for('file')
     log.info(keys)
     log.info(found.keys())
 

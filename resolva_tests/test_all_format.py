@@ -6,8 +6,7 @@ from resolva_tests.pattern import sid_templates
 from resolva.utils import log
 log.setLevel(log.INFO)
 
-Resolver(id="sids", patterns=sid_templates)
-r = Resolver.get("sids")
+r = Resolver.get("sids") or Resolver(id="sids", patterns=sid_templates)
 
 start = datetime.now()
 count = 0
