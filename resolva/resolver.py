@@ -33,7 +33,7 @@ class Resolver:
         # key extraction should be strictly identical, this is a temporary check.
         _keysB = {k: set([t[1] for t in _string.Formatter().parse(v) if t[1] is not None]) for k, v in self._formats.items()}
         if _keys != _keysB:
-            raise ResolvaException(f'Keys not identical in check: "{self._keys}" vs "{self._keysB}"')
+            raise ResolvaException(f'Keys not identical in check: "{_keys}" vs "{_keysB}"')
 
         self._keys = _keys
         self.check_duplicate_placeholders = check_duplicate_placeholders
@@ -46,7 +46,7 @@ class Resolver:
         instance_cache[id] = self
 
     def __str__(self):
-        return f"[resolva.Resolver] ID: [{self.get_id()}] - Pattern names: {self.get_names()}"
+        return f"[resolva.Resolver] ID: [{self.get_id()}] - Pattern labels: {self.get_labels()}"
 
     def __repr__(self):
         return f'resolva.Resolver(id={self.get_id()}, patterns={self.get_patterns()})'
@@ -61,30 +61,30 @@ class Resolver:
     def get_id(self) -> Any:
         return self._id
 
-    def get_names(self) -> list[str]:
+    def get_labels(self) -> list[str]:
         """
-        Returns the list of pattern names.
+        Returns the list of pattern labels.
         """
         return list(self._regexes.keys())
 
-    def get_patterns(self, name=None) -> dict[str, str] | str:
-        if name:
-            return self._patterns.get(name)
+    def get_patterns(self, label=None) -> dict[str, str] | str:
+        if label:
+            return self._patterns.get(label)
         return self._patterns
 
-    def get_regexes(self, name=None) -> dict[str, re.Pattern] | re.Pattern:
-        if name:
-            return self._regexes.get(name)
+    def get_regexes(self, label=None) -> dict[str, re.Pattern] | re.Pattern:
+        if label:
+            return self._regexes.get(label)
         return self._regexes
 
-    def get_formats(self, name=None) -> dict[str, str] | str:
-        if name:
-            return self._formats.get(name)
+    def get_formats(self, label=None) -> dict[str, str] | str:
+        if label:
+            return self._formats.get(label)
         return self._formats
 
-    def get_keys(self, name=None) -> dict[str, set] | set:
-        if name:
-            return self._keys.get(name)
+    def get_keys(self, label=None) -> dict[str, set] | set:
+        if label:
+            return self._keys.get(label)
         return self._keys
 
     @lru_cache()
@@ -95,23 +95,23 @@ class Resolver:
         if not string:
             return result
 
-        for name, regex in self._regexes.items():
+        for label, regex in self._regexes.items():
 
             match = regex.search(string)
             if match:
                 data = template.match_to_dict(match, self.check_duplicate_placeholders)
                 if data:
-                    return name, data
+                    return label, data
 
         return result
 
     @lru_cache()
-    def resolve_one(self, string: str, name: str) -> dict[str, str] | None:
+    def resolve_one(self, string: str, label: str) -> dict[str, str] | None:
 
         if not string:
             return None
 
-        regex = self._regexes.get(name)
+        regex = self._regexes.get(label)
 
         if regex:
             match = regex.search(string)
@@ -130,12 +130,12 @@ class Resolver:
         if not string:
             return found
 
-        for name, regex in self._regexes.items():
+        for label, regex in self._regexes.items():
             match = regex.search(string)
             if match:
                 data = template.match_to_dict(match, self.check_duplicate_placeholders)
                 if data:
-                    found[name] = data
+                    found[label] = data
         return found
 
     def format_first(self, data: dict[str, str]) -> tuple[str, str] | tuple[None, None]:
@@ -145,40 +145,40 @@ class Resolver:
         if not data:
             return result
 
-        for name, _format in self._formats.items():
+        for label, _format in self._formats.items():
 
-            if data.keys() != self._keys.get(name):
+            if data.keys() != self._keys.get(label):
                 continue
 
             formatted = _format.format(**data)
 
             # reverse check
-            reverse_check = self.resolve_one(formatted, name)
+            reverse_check = self.resolve_one(formatted, label)
             if reverse_check:
-                return name, formatted
+                return label, formatted
             else:
-                log.debug(f'reverse check failed on "{formatted}" ({name})')
+                log.debug(f'reverse check failed on "{formatted}" ({label})')
 
         return result
 
-    def format_one(self, data: dict[str, str], name: str) -> str | None:
+    def format_one(self, data: dict[str, str], label: str) -> str | None:
 
         if not data:
             return None
 
-        _format = self._formats.get(name)
+        _format = self._formats.get(label)
 
-        if data.keys() != self._keys.get(name):
+        if data.keys() != self._keys.get(label):
             return None
 
         formatted = _format.format(**data)
 
         # reverse check
-        reverse_check = self.resolve_one(formatted, name)
+        reverse_check = self.resolve_one(formatted, label)
         if reverse_check:
             return formatted
         else:
-            log.debug(f'reverse check failed on "{formatted}" ({name})')
+            log.debug(f'reverse check failed on "{formatted}" ({label})')
 
     def format_all(self, data: dict[str, str]) -> dict[str, dict[str, str]] | {}:
 
@@ -187,19 +187,19 @@ class Resolver:
         if not data:
             return found
 
-        for name, _format in self._formats.items():
+        for label, _format in self._formats.items():
 
-            if data.keys() != self._keys.get(name):
+            if data.keys() != self._keys.get(label):
                 continue
 
             formatted = _format.format(**data)
 
             # reverse check
-            reverse_check = self.resolve_one(formatted, name)
+            reverse_check = self.resolve_one(formatted, label)
             if reverse_check:
-                found[name] = formatted
+                found[label] = formatted
             else:
-                log.debug(f'reverse check failed on "{formatted}" ({name})')
+                log.debug(f'reverse check failed on "{formatted}" ({label})')
 
         return found
 

@@ -26,13 +26,13 @@ for i, s in enumerate(test_strings):
     for k, v in r.resolve_all(s).items():
         log.info(f"\t\t{k}: {v}")
 
-    log.info(f"\tBy name:")
-    for name in r.get_names():
-        found = r.resolve_one(s, name)
+    log.info(f"\tBy label:")
+    for label in r.get_labels():
+        found = r.resolve_one(s, label)
         if found:
-            log.info(f'\t\tKeys: {r.get_keys(name)}')
-            log.info(f'\t\t{name} -> {found}')
-            assert found.keys() == r.get_keys(name)
+            log.info(f'\t\tKeys: {r.get_keys(label)}')
+            log.info(f'\t\t{label} -> {found}')
+            assert found.keys() == r.get_keys(label)
 
     log.info(' ' * 50)
 

@@ -15,14 +15,14 @@ for i, s in enumerate(test_strings):
     log.info('*'*100)
     log.info(f'Input {i}: {s}')
 
-    name_resolved, resolved = r.resolve_first(s)
-    name_formatted, formatted = r.format_first(resolved)
+    label_resolved, resolved = r.resolve_first(s)
+    label_formatted, formatted = r.format_first(resolved)
 
     # This tests that resolve_first and format first return the same type.
     log.info(f"\tBack and forth: ")
-    log.info(f"\t\t({name_resolved}) {s} ---> {formatted} ({name_formatted})")
-    if name_resolved:
-        assert name_resolved == name_formatted
+    log.info(f"\t\t({label_resolved}) {s} ---> {formatted} ({label_formatted})")
+    if label_resolved:
+        assert label_resolved == label_formatted
         assert str(s) == str(formatted)
 
     log.info(f"\tAll: ({resolved})")

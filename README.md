@@ -51,10 +51,10 @@ from resolva import Resolver
 r = Resolver.get("id")  # read the Resolver from the instance cache
 
 input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
-_type, data = r.resolve_first(input)
+label, data = r.resolve_first(input)
 
 # result:
-print(f'Detected type "{_type}" and extracted "{data}"')
+print(f'Detected type "{label}" and extracted "{data}"')
 ```
 Output:
 ```
@@ -113,8 +113,7 @@ If you need one of these, go for the original :)
 
 ### TODO:
 
-- exception handling in Resolver  
-- "label" instead of "name" ? or "key" ?
+- exception handling in Resolver
 - docstrings (+doctests) 
 - pytests calling the existing tests
 - documentation + API documentation (readthedocs or github?)

@@ -16,17 +16,17 @@ for i, s in enumerate(test_strings):
     log.info('*'*100)
     log.info(f'Input {i}: {s}')
 
-    for name_resolved, resolved in r.resolve_all(s).items():
+    for label_resolved, resolved in r.resolve_all(s).items():
 
         log.info(f'\tResolved:')
-        log.info(f'\t\t"{name_resolved}" ({resolved})')
+        log.info(f'\t\t"{label_resolved}" ({resolved})')
 
         # resolve_all and format first do not necessarily return the same type
         # format first will not work here because
-        formatted = r.format_one(resolved, name_resolved)
+        formatted = r.format_one(resolved, label_resolved)
 
         log.info(f"\tBack and forth:")
-        log.info(f'\t\t"{name_resolved}" {s} -> {formatted}')
+        log.info(f'\t\t"{label_resolved}" {s} -> {formatted}')
         assert str(s) == str(formatted)
 
         log.info(f"\tAll: ({resolved})")
