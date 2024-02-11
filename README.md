@@ -9,15 +9,16 @@ Inspired by and derived from Lucidity.
 
 **resolva** is a python library that extracts data from a string by matching configurated patterns.
 
-`"/mnt/prods/hamlet/shots/sq010"` => 
-`"/mnt/prods/{prod}/shots/{seq}"` => 
+`"/mnt/prods/hamlet/shots/sq010"` >>  
+`"/mnt/prods/{prod}/shots/{seq}"` >>  
 `{"prod": "hamlet", "seq": "sq010"}`
 
-Typical usage:
-- for a path or string input,
-- loops through a series of configured patterns, 
-- once a matching pattern found, 
-- extracts data and returns a dictionary
+#### Process
+
+1. for a path or string input,
+2. the resolver loops through a series of configured patterns, 
+3. once a matching pattern found, 
+4. extracts data and returns a dictionary
 
 Instead of bare regex, the pattern uses a simpler "format" style syntax.  
 
