@@ -111,6 +111,14 @@ The result is a fast and very simple toolset.
 If you need one of these, go for the original :)
 
 
+## Installation
+
+**resolva** works in Python >=3.7.  
+It is available on pypi and can be installed using `pip install resolva`,  
+or from github `pip install git+https://github.com/MichaelHaussmann/resolva.git`
+
+**resolva** is open source, License: MIT.
+
 ### TODO:
 
 - docstrings (+doctests) 

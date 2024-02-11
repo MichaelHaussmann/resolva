@@ -1,4 +1,6 @@
 """
+This file is part of resolva.
+
 This code is taken and derived from Lucidity.
 
 https://gitlab.com/4degrees/lucidity/
@@ -6,7 +8,6 @@ https://lucidity.readthedocs.io
 
 copyright: Copyright (c) 2013 Martin Pengelly-Phillips
 licence: Apache License, Version 2.0, January 2004, http://www.apache.org/licenses
-
 """
 import functools
 from collections import defaultdict

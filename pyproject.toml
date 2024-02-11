@@ -10,7 +10,7 @@ exclude = [".gitignore"]
 
 [project]
 name = "resolva"
-version = "0.1.0"
+version = "0.0.1"
 description = "Simple and fast path template resolver."
 readme = "README.md"
 authors = [{ name = "Michael Haussmann", email = "spil@xeo.info" }]
@@ -35,11 +35,10 @@ requires-python = ">=3.7"
 
 [project.optional-dependencies]
 dev = ["pytest"]  # "Faker"
-qc = ["mypy", "black", "flake8", "isort", "refurb"]  # Code Quality
+# qc = ["mypy", "black", "flake8", "isort", "refurb"]  # Code Quality
 
 [project.urls]
 "Homepage" = "https://github.com/MichaelHaussmann/resolva"
-# "Documentation" = "https://resolva.readthedocs.io"
 
 [tool.isort]
 profile = "black"

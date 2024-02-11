@@ -1,3 +1,8 @@
+"""
+This file is part of resolva.
+(C) copyright 2024 Michael Haussmann, spil@xeo.info
+resolva is free software and is distributed under the MIT License. See LICENSE file.
+"""
 import logging
 import sys
 
