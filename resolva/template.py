@@ -30,6 +30,7 @@ def construct_regular_expression(pattern, anchor_start=True, anchor_end=True):
     #     pattern
     # )
     expression = pattern
+    expression = expression.replace("[", "(?:").replace("]", "?)?")
 
     # Replace placeholders with regex pattern.
     expression = re.sub(
@@ -39,6 +40,13 @@ def construct_regular_expression(pattern, anchor_start=True, anchor_end=True):
         ),
         expression
     )
+
+    # Replace
+    # [/ => (?:/
+    # )] => )?)?
+    # print(expression)
+    # expression = expression.replace("[/", "(?:/").replace(")]", ")?)?")
+    # print(expression)
 
     # anchoring
     if anchor_start:
@@ -126,6 +134,7 @@ def match_to_dict(match, check_duplicate_placeholders=True):
 
 def construct_format_specification(pattern):
     '''Return format specification from *pattern*.'''
+    pattern = pattern.replace("[", "").replace("]", "")
     return _STRIP_EXPRESSION_REGEX.sub('{\g<1>}', pattern)
 
 
@@ -134,12 +143,18 @@ def get_keys(pattern):
 
 
 if __name__ == "__main__":
+    shot__cache_node_file = r"{project:(hamlet|\*|\>)}/{type:(s|\*|\>)}/{sequence:(sq\d\d\d|\*|\>)}/{shot:(sh\d\d\d\d|\*|\>)}/{task:(board|layout|anim|fx|render|comp|\*|\>)}/{version:(v\d\d\d|\*|\>)}/{state:(w|p|\*|\>)}/{node}/{ext:(abc|json|fur|grm|vdb|cache|\*|\>)}",
 
-    pat = '{project}/{type:s}/{sequence}/{shot}/{task}/{version}/{state}/{ext:ma|mb}'
+    pat = '{project}/{type:s}/{sequence}/{shot}/{task}/{version}/{state}[/{node}]/{ext:vdb|abc}'
     print(f'Pattern: \n{pat}\n')
 
+    reg = construct_regular_expression(pat, False, False)
+    print(f'Regex: \n{reg}\n')
+
+    """
     reg = construct_regular_expression(pat)
     print(f'Regex: \n{reg}\n')
 
     fmt = construct_format_specification(pat)
     print(f'Formattable: \n{fmt}\n')
+    """

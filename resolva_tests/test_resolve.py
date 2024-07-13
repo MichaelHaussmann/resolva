@@ -4,7 +4,7 @@ from resolva_tests.data import test_strings  # type: ignore
 from resolva_tests.pattern import sid_templates  # type: ignore
 
 from resolva.utils import log  # type: ignore
-log.setLevel(log.INFO)  # type: ignore
+log.setLevel(log.WARNING)  # type: ignore
 
 r = Resolver.get("sids") or Resolver(id="sids", patterns=sid_templates)
 
@@ -19,6 +19,9 @@ for i, s in enumerate(test_strings):
     k, v = r.resolve_first(s)
     if k:
         log.info(f"\t\t{k}: {v}")
+    else:
+        log.warning(f"Did not resolve {s}")
+        continue
 
     log.info(f"\tAll:")
     for k, v in r.resolve_all(s).items():
