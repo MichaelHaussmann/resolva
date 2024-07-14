@@ -7,13 +7,15 @@ Inspired by and derived from Lucidity.
 
 ## What is resolva ?
 
-**resolva** is a python library that extracts data from a string by matching configurated patterns.
+**resolva** is a python library that extracts data from a string by matching configured patterns.
 
 `"/mnt/prods/hamlet/shots/sq010"` >>  
 `"/mnt/prods/{prod}/shots/{seq}"` >>  
 `{"prod": "hamlet", "seq": "sq010"}`
 
-#### Process
+Full documentation: [resolva.readthedocs.io](https://resolva.readthedocs.io).
+
+### Process
 
 1. for a path or string input,
 2. the resolver loops through a series of configured patterns, 
@@ -73,7 +75,6 @@ Detected type "maya_file" and extracted
 - very simple API
   - resolve with one, first, or all patterns
   - format with one, first, or all patterns
-  - format including reverse resolve check
 - high speed using caches
   - instance cache (keep regex compilations in memory)
   - lru_caches (speed up immutable resolves)
@@ -120,16 +121,14 @@ or from github `pip install git+https://github.com/MichaelHaussmann/resolva.git`
 
 **resolva** is open source, License: MIT.
 
-### TODO:
+## TODO:
 
-- docstrings (+doctests) 
 - pytests calling the existing tests
-- Usage documentation, dev documentation + API documentation (readthedocs or github?)
 - black, refurb, etc.
 - pip installable and python bound rust implementation 
 
 
-### Acknowledgements
+## Acknowledgements
 
 **resolva** is inspired by, and derived from **Lucidity**.
 
@@ -145,3 +144,17 @@ licence: Apache License, Version 2.0
 https://github.com/MichaelHaussmann/resolva  
 (c) 2024 Michael Haussmann  
 licence: MIT
+
+
+## Interested ?
+
+We'd love to hear from you.  
+We are interested in any kind of feedback: comments, questions, issues, pull requests.
+
+Do not hesitate to [start a discussion](https://github.com/MichaelHaussmann/resolva/discussions/new/choose)
+
+<br>
+  
+![python](https://img.shields.io/badge/PYTHON-blue?style=for-the-badge&logo=Python&logoColor=white)
+![type checker](https://img.shields.io/badge/Type%20checker-MYPY-dodgerblue?style=for-the-badge&labelColor=abcdef)
+![gitHub release](https://img.shields.io/github/v/release/MichaelHaussmann/resolva?style=for-the-badge&color=orange&labelColor=sandybrown)

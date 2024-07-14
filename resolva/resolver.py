@@ -22,7 +22,7 @@ class Resolver:
     When a Resolver object is created, it is set in an instance cache (in memory), for faster usage later.
     The instance contains the compiled regex patterns, which do not need to be recompiled later.
 
-    Examples:
+    Examples
 
         >>> # 1. Reading the patterns and creating the Resolver instance
         >>> patterns = {"maya_file": r"/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(ma|mb)}", \
@@ -125,6 +125,7 @@ class Resolver:
         The given id should be an id already used during Resolver creation.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r)
@@ -147,6 +148,7 @@ class Resolver:
         Gets the id for the current Resolver instance.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_id())
@@ -163,6 +165,7 @@ class Resolver:
         Returns the list of pattern labels, as set during instantiation of the Resolver
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_labels())
@@ -179,6 +182,7 @@ class Resolver:
         Returns the patterns dictionary, as set during instantiation of the Resolver
 
         Example
+
             >>> # the instance was created in earlier example
             >>> from pprint import pprint
             >>> r = Resolver.get("any_id")
@@ -200,6 +204,7 @@ class Resolver:
         As stored in the patterns dictionary set during instantiation of the Resolver
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_pattern_for("sequence"))
@@ -226,6 +231,7 @@ class Resolver:
         Is it not necessary to manipulate the regexes to resolve or format.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> from pprint import pprint
             >>> r = Resolver.get("any_id")
@@ -246,6 +252,7 @@ class Resolver:
         As stored in the internal regexes dictionary
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_regex_for("sequence"))
@@ -267,6 +274,7 @@ class Resolver:
         All "format" strings are stored in an internal "formats" dict, with labels as keys.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_formats())
@@ -285,6 +293,7 @@ class Resolver:
         As stored in the internal "formats" dictionary.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_format_for("sequence"))
@@ -305,6 +314,7 @@ class Resolver:
         These keywords are stored in an internal "keys" dictionary, with labels as dict keys, and a set of keywords as value.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> for k, v in r.get_keys().items(): \
@@ -325,6 +335,7 @@ class Resolver:
         As stored in the internal "keys" dictionary.
 
         Example
+
             >>> # the instance was created in earlier example
             >>> r = Resolver.get("any_id")
             >>> print(r.get_keys_for("project"))
@@ -355,7 +366,8 @@ class Resolver:
         This match generates a data dictionary.
         The method returns a tuple with the matching pattern label and the resolved data dictionary.
 
-        Example
+        Examples
+
             >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
             >>> r = Resolver.get("any_id")
             >>> label, data = r.resolve_first(input)
@@ -408,6 +420,7 @@ class Resolver:
         If not, an empty dictionary is returned
 
         Examples
+
             >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
             >>> r = Resolver.get("any_id")
             >>> data = r.resolve_one(input, "maya_file")
@@ -467,7 +480,8 @@ class Resolver:
 
         If there is no match, an empty dictionary is returned.
 
-        Example
+        Examples
+
             >>> from pprint import pprint
             >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
             >>> r = Resolver.get("any_id")
@@ -539,7 +553,8 @@ class Resolver:
         The method returns a tuple with the label and the formatted string.
         Or a (None, None) tuple if there is no match.
 
-        Example
+        Examples
+
             >>> r = Resolver.get("any_id")
             >>> data = { 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
             >>> formatted = r.format_first(data)
@@ -599,7 +614,8 @@ class Resolver:
         If the pattern matches, the generated formatted string is returned.
         Else, None is returned.
 
-        Example
+        Examples
+
             >>> data = {'prod': 'hamlet', 'seq': 'sq010'}
             >>> r = Resolver.get("any_id")
             >>> formatted = r.format_one(data, "sequence")
@@ -661,7 +677,8 @@ class Resolver:
         The method returns a dictionary with all matching pattern labels as keys, and the formatted strings as values.
         If there is no match, an empty dictionary is returned.
 
-         Example
+         Examples
+
             >>> data = {'prod': 'hamlet', 'seq': 'sq010'}
             >>> r = Resolver.get("any_id")
             >>> formatted = r.format_all(data)
