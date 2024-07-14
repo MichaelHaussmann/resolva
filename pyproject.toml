@@ -10,7 +10,7 @@ exclude = [".gitignore"]
 
 [project]
 name = "resolva"
-version = "0.0.1"
+version = "0.1.0"
 description = "Simple and fast path template resolver."
 readme = "README.md"
 authors = [{ name = "Michael Haussmann", email = "spil@xeo.info" }]
