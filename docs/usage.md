@@ -1,16 +1,41 @@
 # Usage
 
-## What is resolva ?
+## Quickstart
 
-**resolva** is a python library that extracts data from a string by matching configured patterns.
+### General process
 
-### Quick example
+- For a configured pattern, eg: `/mnt/prods/{prod}/shots/{seq}` 
+- Given a path, eg: `/mnt/prods/hamlet/shots/sq010`  
+- Resolva will extract and return this: `{"prod": "hamlet", "seq": "sq010"}`
 
-- For this configured pattern: `/mnt/prods/{prod}/shots/{seq}` 
-- Given this path: `/mnt/prods/hamlet/shots/sq010`  
-- Resolva will **resolve** and return this: `{"prod": "hamlet", "seq": "sq010"}`
+### Simple complete usage example
 
-## Patterns
+Configuration:
+```python
+from resolva import Resolver
+
+template = {"maya_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(ma|mb)}",
+            "hou_file": "/mnt/prods/{prod}/shots/{seq}/{shot}_{version:(v\d\d\d)}.{ext:(hip|hipnc)}"}
+Resolver("id", template)  # create the Resolver in an instance cache
+```
+Resolving:
+```python
+from resolva import Resolver
+r = Resolver.get("id")  # read the Resolver from the instance cache
+
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+label, data = r.resolve_first(input)
+
+# result:
+print(f'Detected type "{label}" and extracted "{data}"')
+```
+Output:
+```
+Detected type "maya_file" and extracted 
+{"prod": "hamlet", "seq": "sq010", "shot": "sh010", "version": "v012", "ext": "ma"}
+```
+
+## Configuration
 
 ### Pattern syntax
 
@@ -69,7 +94,7 @@ The following input will raise a *ResolvaException*:
 `/mnt/prods/hamlet/shots/sq010/sh010/010_v001.ma` because `sh010` and `010` both match `shot` but are not equal. 
 
 
-## Usage
+## Resolving and formatting
 
 ### Creating the Resolver object
 
@@ -123,9 +148,7 @@ It runs over the list of patterns (internally over the list of re.Pattern) until
 This match generates a data dictionary.
 The method returns a tuple with the matching pattern label and the resolved data dictionary.
 
-Examples:
-
-Maya file
+#### Example: resolving Maya file path, finds "maya_file" pattern
 
 ```python
 import resolva
@@ -135,12 +158,11 @@ r = resolva.Resolver.get("any_id")
 label, data = r.resolve_first(input)
 ```
 
-The result is:
+Result:
 - label: `maya_file`
 - data: `{'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}`
 
-
-Generic file 
+#### Example: resolving Nuke file path, finds "any_file" pattern
 
 ```python
 import resolva
@@ -150,13 +172,13 @@ r = resolva.Resolver.get("any_id")
 label, data = r.resolve_first(input)
 ```
 
-The result is:
+Result:
 - label: `any_file`
 - data: `{'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'nk'}`
 
 ### resolve_one
 
-**resolve_one** resolves using the designated pattern.
+**resolve_one** resolves using the given pattern.
 
 It receives a string to resolve and a pattern label to match against.
 The Resolver then tries to match the string with the designated pattern.
@@ -164,23 +186,40 @@ The Resolver then tries to match the string with the designated pattern.
 If the match happens, a data dictionary is generated and returned.
 If not, an empty dictionary is returned
 
-Examples
+#### Example: resolving Maya file path with given "maya_file" pattern
 
-    >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
-    >>> r = Resolver.get("any_id")
-    >>> data = r.resolve_one(input, "maya_file")
-    >>> print(data)
-    {'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
+```python
+import resolva
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+r = resolva.Resolver.get("any_id")
+data = r.resolve_one(input, "maya_file")
+```
 
-    >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
-    >>> r = Resolver.get("any_id")
-    >>> data = r.resolve_one(input, "any_file")
-    >>> print(data)
-    {'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
+Result:
+- data: `{'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}`
 
-    >>> data = r.resolve_one(input, "sequence")
-    >>> print(data)
-    {}
+#### Example: resolving Maya file path with given "any_file" pattern
+
+```python
+import resolva
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+r = resolva.Resolver.get("any_id")
+data = r.resolve_one(input, "any_file")
+```
+Result:
+- data: `{'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}`
+
+#### Example: resolving Maya file path with given "sequence" pattern: not matching
+
+```python
+import resolva
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+r = resolva.Resolver.get("any_id")
+data = r.resolve_one(input, "sequence")
+```
+
+Result: not matching
+- data: `{}`
 
 ### resolve_all
 
@@ -196,36 +235,41 @@ The method returns a dictionary with
 
 If there is no match, an empty dictionary is returned.
 
-Examples
+#### Example: resolving Maya file path with all patterns
 
-    >>> from pprint import pprint
-    >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
-    >>> r = Resolver.get("any_id")
-    >>> found = r.resolve_all(input)
-    >>> pprint(found)
-    {'any_file': {'ext': 'ma',
-                  'prod': 'hamlet',
-                  'seq': 'sq010',
-                  'shot': 'sh010',
-                  'version': 'v012'},
-     'maya_file': {'ext': 'ma',
-                   'prod': 'hamlet',
-                   'seq': 'sq010',
-                   'shot': 'sh010',
-                   'version': 'v012'}}
+```python
+import resolva
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.ma"
+r = resolva.Resolver.get("any_id")
+found = r.resolve_all(input)
+```
 
-    >>> input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.nk"
-    >>> found = r.resolve_all(input)
-    >>> pprint(found)
-    {'any_file': {'ext': 'nk',
-                  'prod': 'hamlet',
-                  'seq': 'sq010',
-                  'shot': 'sh010',
-                  'version': 'v012'}}
+Result:
+- found: `{'any_file': {'ext': 'ma', 'prod': 'hamlet','seq': 'sq010', 'shot': 'sh010','version': 'v012'}, 'maya_file': {'ext': 'ma', 'prod': 'hamlet', 'seq': 'sq010','shot': 'sh010','version': 'v012'}}`
 
-    >>> found = r.resolve_all("blablabla")
-    >>> print(found)
-    {}
+#### Example: resolving Nuke file path with all patterns
+
+```python
+import resolva
+input = "/mnt/prods/hamlet/shots/sq010/sh010_v012.nk"
+r = resolva.Resolver.get("any_id")
+found = r.resolve_all(input)
+```
+
+Result:
+- found: `{'any_file': {'ext': 'nk', 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012'}}`
+
+#### Example: resolving non-matching string with all patterns
+
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+found = r.resolve_all("blablabla")
+```
+
+Result:
+- found: `{}`
+
 
 ## Formatting
 
@@ -245,51 +289,78 @@ It receives a string data dictionary to format.
 It runs over the list of patterns (internally over the internal "formats" dict) until the first match.
 
 A match means:
-- the keys of the data dictionary matches the keys of the patterns "format" string,
+- the keys of the data dictionary match the keys of the patterns "format" string,
 - the formatted string resolves back to an identical data dictionary.
 
 Once a match is found, a formatted string is generated and returned.
 The method returns a tuple with the label and the formatted string.
 Or a (None, None) tuple if there is no match.
 
-Examples
 
-    >>>   r = Resolver.get("any_id")
-    >>>   data = { 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
-    >>>   formatted = r.format_first(data)
-    >>>   print(formatted)
-    ('maya_file', '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma')
+#### Example: formatting Maya file dict with first matching pattern 
 
-    >>>   data = {'prod': 'hamlet', 'seq': 'sq010'}
-    >>>   formatted = r.format_first(data)
-    >>>   print(formatted)
-    ('sequence', '/mnt/prods/hamlet/shots/sq010')
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = { 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
+formatted = r.format_first(data)
+```
+
+Result:
+- formatted: `('maya_file', '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma')`
+
+
+#### Example: formatting Sequence dict with first matching pattern 
+
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = {'prod': 'hamlet', 'seq': 'sq010'}
+formatted = r.format_first(data)
+```
+
+Result:
+- formatted: `('sequence', '/mnt/prods/hamlet/shots/sq010')`
+
 
 ### format_one
 
-**format_one** formats using the designated pattern.
+**format_one** formats using the given pattern.
 
 It receives a string data dictionary to format, and a pattern label to match against.
 
 The Resolver then tries to match with the designated pattern.
 A match means:
-- the keys of the data dictionary matches the keys of the patterns "format" string,
+- the keys of the data dictionary match the keys of the patterns "format" string,
 - the formatted string resolves back to an identical data dictionary.
 
 If the pattern matches, the generated formatted string is returned.
 Else, None is returned.
 
-Examples
+#### Example: formatting Sequence dict with given "sequence" pattern 
 
-    >>> data = {'prod': 'hamlet', 'seq': 'sq010'}
-    >>> r = Resolver.get("any_id")
-    >>> formatted = r.format_one(data, "sequence")
-    >>> print(formatted)
-    /mnt/prods/hamlet/shots/sq010
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = {'prod': 'hamlet', 'seq': 'sq010'}
+formatted = r.format_one(data, "sequence")
+```
 
-    >>> formatted = r.format_one(data, "project")
-    >>> print(formatted)
-    None
+Result:
+- formatted: `'/mnt/prods/hamlet/shots/sq010'`
+
+#### Example: formatting Sequence dict with given "project" pattern: not matching
+
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = {'prod': 'hamlet', 'seq': 'sq010'}
+formatted = r.format_one(data, "project")
+```
+
+Result:
+- formatted: `None`
+
 
 ### format_all
 
@@ -301,26 +372,38 @@ It runs over the list of patterns (internally over the internal "formats" dict).
 Every match generates a formatted string.
 
 A match means:
-- the keys of the data dictionary matches the keys of the patterns "format" string,
+- the keys of the data dictionary match the keys of the patterns "format" string,
 - the formatted string resolves back to an identical data dictionary.
 
 The method returns a dictionary with all matching pattern labels as keys, and the formatted strings as values.
 If there is no match, an empty dictionary is returned.
 
-Examples
+#### Example: formatting Sequence dict with all patterns 
 
-    >>> data = {'prod': 'hamlet', 'seq': 'sq010'}
-    >>> r = Resolver.get("any_id")
-    >>> formatted = r.format_all(data)
-    >>> print(formatted)
-    {'sequence': '/mnt/prods/hamlet/shots/sq010'}
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = {'prod': 'hamlet', 'seq': 'sq010'}
+formatted = r.format_all(data)
+```
+
+Result:
+- formatted: `{'sequence': '/mnt/prods/hamlet/shots/sq010'}`
+
+
+#### Example: formatting Maya file dict with all patterns
     
-    >>> data = { 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
-    >>> r = Resolver.get("any_id")
-    >>> formatted = r.format_all(data)
-    >>> print(formatted)
-    {'maya_file': '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma', 'any_file': '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma'}
+```python
+import resolva
+r = resolva.Resolver.get("any_id")
+data = { 'prod': 'hamlet', 'seq': 'sq010', 'shot': 'sh010', 'version': 'v012', 'ext': 'ma'}
+formatted = r.format_all(data)
+```
 
+Result:
+- formatted: `{'maya_file': '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma', 'any_file': '/mnt/prods/hamlet/shots/sq010/sh010_v012.ma'}`
+
+    
 ## Control and introspection
 
 The `resolva.Resolver` class has some extra methods to control and introspect its content.

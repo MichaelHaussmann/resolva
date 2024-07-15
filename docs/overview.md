@@ -1,19 +1,17 @@
-
-# resolva
-
-Simple and fast path template resolver.  
-Inspired by and derived from Lucidity.
-
+# Overview
 
 ## What is resolva ?
 
-**resolva** is a python library that extracts data from a string by matching configured patterns.
+**resolva** is a simple and fast **path template resolver**:<br>
+A python library that extracts data from a string by matching configured patterns.  
 
-`"/mnt/prods/hamlet/shots/sq010"` >>  
-`"/mnt/prods/{prod}/shots/{seq}"` >>  
-`{"prod": "hamlet", "seq": "sq010"}`
+It is inspired by and derived from [Lucidity](https://gitlab.com/4degrees/lucidity), which in turn is loosely inspired by [Shotgrid Toolkit (SGTK) templating](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml). 
 
-Full documentation: [resolva.readthedocs.io](https://resolva.readthedocs.io).
+### How does it work ?
+
+- For a configured pattern, eg: `/mnt/prods/{prod}/shots/{seq}` 
+- Given a path, eg: `/mnt/prods/hamlet/shots/sq010`  
+- Resolva will extract and return this: `{"prod": "hamlet", "seq": "sq010"}`
 
 ### Process
 
@@ -32,7 +30,7 @@ Template based path resolving is a typical need in CG pipeline tools.
 
 Examples include:
 
-- [Shotgrid Toolkit (SGTK)](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml) - Leading commercial CG and VFX Project Management and pipeline toolkit
+- [Shotgrid Toolkit (SGTK)](https://github.com/shotgunsoftware/tk-config-default2/blob/master/core/templates.yml) - Leading commercial CG and VFX Project Management and pipeline toolkit
 - [CGWire's kitsu file trees](https://zou.cg-wire.com/file_trees) - Kitsu is an Open Source collaboration platform for Animation and VFX studios. 
 - [Lucidity](https://gitlab.com/4degrees/lucidity) - Inspired by SGTK templating, in turn inspiration and base of **resolva**
 - [spil](https://github.com/MichaelHaussmann/spil) - Uses **resolva** at its core
@@ -65,18 +63,15 @@ Detected type "maya_file" and extracted
 {"prod": "hamlet", "seq": "sq010", "shot": "sh010", "version": "v012", "ext": "ma"}
 ```
 
-
-
 ## Features
 
-- simple template format     
+- Simple template format     
   - Example: `/{shot}/{version}/{name}.{extension:(ma|mb)}`
   - handles duplicate placeholders
-- very simple API
+- Very simple API
   - resolve with one, first, or all patterns
   - format with one, first, or all patterns
-  - format including reverse resolve check
-- high speed using caches
+- High speed thanks to caches
   - instance cache (keep regex compilations in memory)
   - lru_caches (speed up immutable resolves)
 
@@ -116,19 +111,10 @@ If you need one of these, go for the original :)
 
 ## Installation
 
-**resolva** works in Python >=3.7.  
+**resolva** works in Python >=3.7.<br>
 It is available on pypi and can be installed using `pip install resolva`,  
-or from github `pip install git+https://github.com/MichaelHaussmann/resolva.git`
 
 **resolva** is open source, License: MIT.
-
-## TODO:
-
-- docstrings (+doctests) 
-- pytests calling the existing tests
-- Usage documentation, dev documentation + API documentation (readthedocs or github?)
-- black, refurb, etc.
-- pip installable and python bound rust implementation 
 
 
 ## Acknowledgements
@@ -137,24 +123,24 @@ or from github `pip install git+https://github.com/MichaelHaussmann/resolva.git`
 
 ### Lucidity 
 
-https://gitlab.com/4degrees/lucidity/  
-https://lucidity.readthedocs.io  
-copyright: Copyright (c) 2013 Martin Pengelly-Phillips  
+[https://gitlab.com/4degrees/lucidity](https://gitlab.com/4degrees/lucidity)<br>
+[https://lucidity.readthedocs.io](https://lucidity.readthedocs.io)<br>
+copyright: Copyright (c) 2013 Martin Pengelly-Phillips<br>  
 licence: Apache License, Version 2.0
 
 ### resolva
 
-https://github.com/MichaelHaussmann/resolva  
-(c) 2024 Michael Haussmann  
+[https://github.com/MichaelHaussmann/resolva](https://github.com/MichaelHaussmann/resolva)<br>
+(c) 2024 Michael Haussmann<br>
 licence: MIT
 
 
 ## Interested ?
 
-We'd love to hear from you.  
+We'd love to hear from you.<br>
 We are interested in any kind of feedback: comments, questions, issues, pull requests.
 
-Do not hesitate to [start a discussion](https://github.com/MichaelHaussmann/resolva/discussions/new/choose)
+Do not hesitate to [start a discussion on github](https://github.com/MichaelHaussmann/resolva/discussions/new/choose).
 
 <br>
   

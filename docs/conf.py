@@ -51,7 +51,7 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_title = "Resolva Documentation"
 # html_logo = "img/small.png"
-# html_favicon = "img/favicon.ico"
+html_favicon = "img/favicon.ico"
 
 html_theme_options = {
 	# 'logo_only': True,
