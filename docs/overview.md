@@ -1,4 +1,4 @@
-# resolva
+# Overview
 
 ## What is resolva ?
 
@@ -6,10 +6,6 @@
 A python library that extracts data from a string by matching configured patterns.  
 
 It is inspired by and derived from [Lucidity](https://gitlab.com/4degrees/lucidity), which in turn is loosely inspired by [Shotgrid Toolkit (SGTK) templating](https://github.com/shotgunsoftware/tk-config-default/blob/master/core/templates.yml). 
-
-
-Full documentation: [resolva.readthedocs.io](https://resolva.readthedocs.io).
-
 
 ### How does it work ?
 

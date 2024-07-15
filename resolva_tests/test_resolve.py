@@ -19,6 +19,9 @@ for i, s in enumerate(test_strings):
     k, v = r.resolve_first(s)
     if k:
         log.info(f"\t\t{k}: {v}")
+    else:
+        log.warning(f"Did not resolve {s}")
+        continue
 
     log.info(f"\tAll:")
     for k, v in r.resolve_all(s).items():
@@ -38,4 +41,4 @@ end = datetime.now()
 log.warning(f"\nDuration: {end-start} for {i} items. \n"
       f"Average: {(end-start)/i} per item (for 3 resolve operations). \n"
       f"Pattern lines: {len(r.get_keys())}. \n"
-      f"(set log level to log.WARNING to measure time without print impact)")
+      f"(set log level to log.WARNING to measure time, or log.INFO to see detail)")
