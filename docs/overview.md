@@ -131,6 +131,7 @@ licence: Apache License, Version 2.0
 ### resolva
 
 [https://github.com/MichaelHaussmann/resolva](https://github.com/MichaelHaussmann/resolva)<br>
+[https://resolva.readthedocs.io](https://resolva.readthedocs.io)<br>
 (c) 2024 Michael Haussmann<br>
 licence: MIT
 
