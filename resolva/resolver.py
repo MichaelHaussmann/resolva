@@ -644,7 +644,7 @@ class Resolver:
             return None
 
         if data.keys() != self._keys.get(label):
-            log.info(f'Keys mismatch. Given: "{data.keys()}" vs Template ("{label}"): "{self._keys.get(label)}"')
+            log.debug(f'Keys mismatch. Given: "{data.keys()}" vs Template ("{label}"): "{self._keys.get(label)}"')
             return None
 
         formatted = _format.format(**data)
